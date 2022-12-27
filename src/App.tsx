@@ -1,34 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from "react";
+import mapa from "../public/img/mapamunid_mudo_01.jpg";
+import logo from "../public/img/rpw.png";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [count, setCount] = useState(0);
+   function draw() {
+     var canvas = document.getElementById("mapa");
+     if (canvas.getContext) {
+       var ctx = canvas.getContext("2d");
+     }
+   }
   return (
     <div className="App">
+      
+      <h1>
+        <img src={logo} alt="mapa" width="60" height="40" /> Real Pixel World
+      </h1>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <canvas id="mapa" width="1024" height="768">
+          <img src={mapa} alt="mapa" width="1024" height="768"/>
+        </canvas>
+        <p id="clear">clear</p>
+        <script src="main.js"></script>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
