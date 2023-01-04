@@ -1,16 +1,17 @@
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import logo from "./assets/logo_v2.png";
-import mapa from "./assets/mapa_mudo_01.jpg";
+import { NotificationProvider } from "./context";
+import { AppRouter } from "./routers";
 
 function App() {
   return (
-    <div className="App">
-      <h1>
-        <img src={logo} alt="mapa" width="60" height="40" /> Real Pixel World
-      </h1>
-      <img src={mapa} alt="mapa" width="1024" height="768" />
-    </div>
+    <>
+      <NotificationProvider >
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </NotificationProvider>
+    </>
   );
 }
-
 export default App;
