@@ -1,6 +1,6 @@
-import { HeaderComponent } from '@/components';
+import { Canvas, HeaderComponent } from '@/components';
 import { useNotification } from '@/context';
-import { Button, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import { useEffect } from 'react';
 export interface HomeInterface {}
 const Home: React.FC<HomeInterface> = () => {
@@ -33,16 +33,8 @@ const Home: React.FC<HomeInterface> = () => {
 			<HeaderComponent
 				title={"👋 pixel art's"}
 				description={'Bienvenidos a Real Pixel Word'}
-				element={
-					<Button
-						fullWidth
-						onClick={handleClick}
-						variant="contained"
-						color="primary"
-					>
-						Login
-					</Button>
-				}/>
+			/>
+			<Canvas />
 		</Container>
 	);
 };
