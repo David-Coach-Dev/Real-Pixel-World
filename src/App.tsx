@@ -1,6 +1,7 @@
-import logo from "../src/assets/logo_v2.png.png";
-import mapa from "../src/assets/mapa_mudo_01.jpg";
 import "./App.css";
+import * as path from 'path'
+import logo from "./assets/logo_v2.png";
+import mapa from "./assets/mapa_mudo_01.jpg";
 
 function App() {
   return (
