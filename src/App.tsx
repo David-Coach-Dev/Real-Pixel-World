@@ -5,12 +5,6 @@ import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
-   function draw() {
-     var canvas = document.getElementById("mapa");
-     if (canvas.getContext) {
-       var ctx = canvas.getContext("2d");
-     }
-   }
   return (
     <div className="App">
       
