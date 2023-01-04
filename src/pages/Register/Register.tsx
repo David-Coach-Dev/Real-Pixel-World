@@ -10,16 +10,18 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-export interface LoginInterface {}
-type LoginType = {
+export interface RegisterInterface {}
+type RegisterType = {
   username: string;
   password: string;
+  confirmar_password: string;
 };
-export const Login: React.FC<LoginInterface> = () => {
+export const Register: React.FC<RegisterInterface> = () => {
   const { getSuccess, getError } = useNotification();
-  const [loginData, setLoginData] = useState<LoginType>({
+  const [loginData, setLoginData] = useState<RegisterType>({
     username: "",
     password: "",
+    confirmar_password: "",
   });
   const dataLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -47,7 +49,7 @@ export const Login: React.FC<LoginInterface> = () => {
         <Grid item>
           <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
             <Typography variant="h4" sx={{ mt: 1, mb: 1 }}>
-              Iniciar sesión.
+              Registro de usuario.
             </Typography>
             <Box component="form" onSubmit={handleSubmit}>
               <TextField
@@ -68,13 +70,22 @@ export const Login: React.FC<LoginInterface> = () => {
                 sx={{ mt: 1.5, mb: 1.5 }}
                 onChange={dataLogin}
               />
+              <TextField
+                margin="normal"
+                name="Confirmar_password"
+                fullWidth
+                type="password"
+                label="Confirmar Password :"
+                sx={{ mt: 1.5, mb: 1.5 }}
+                onChange={dataLogin}
+              />
               <Button
                 fullWidth
                 type="submit"
                 variant="contained"
                 sx={{ mt: 1.5, mb: 3 }}
               >
-                Iniciar sesión.
+                Registar usuario.
               </Button>
             </Box>
           </Paper>
@@ -84,4 +95,4 @@ export const Login: React.FC<LoginInterface> = () => {
     </Container>
   );
 };
-export default Login;
+export default Register;
