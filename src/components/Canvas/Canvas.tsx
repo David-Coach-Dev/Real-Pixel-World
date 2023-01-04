@@ -64,12 +64,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
 
   const setToClear = () => {
     contextRef.current.clearRect(0, 0, x, y);
-  };
-
-  const setChangeColor = (color) => {
-    context.strokeStyle = color;
-    contextRef.current = context;
-  };
+	};
+	
   const saveImageToLocal = (event) => {
     let link = event.currentTarget;
     link.setAttribute("download", "canvas.png");
