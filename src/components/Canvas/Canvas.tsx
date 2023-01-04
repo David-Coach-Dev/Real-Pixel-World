@@ -159,7 +159,7 @@ export const CanvasStyle = styled.div`
   height: 780px;
   border: 2px solid #323232;
   cursor: pointer;
-  background-image: url("/public/img/mapa_mudo_01.jpg");
+  background-image: url("https://i.imgur.com/NpP3gxD.jpeg");
 `;
 export const CanvasGuide = styled.div`
   display: grid;
