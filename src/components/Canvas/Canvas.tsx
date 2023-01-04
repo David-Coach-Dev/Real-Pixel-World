@@ -11,10 +11,10 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const [isColor, setColor] = useState("");
   const [toggleGuide, setToggleGuide] = useState(true);
   const [x, setX] = useState(1280);
-	const [y, setY] = useState(780);
+  const [y, setY] = useState(780);
   const [a, setA] = useState(0);
- 
-	useEffect(() => {
+
+  useEffect(() => {
     const guide = document.getElementById("guide");
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -27,28 +27,28 @@ const Canvas: React.FC<CanvasInterface> = () => {
     guide.style.gridTemplateRows = `repeat(${CELL_SIDE_COUNT}, 1fr)`;
     guide.style.display = toggleGuide ? null : "none";
     //
-     canvas.addEventListener("mousedown", handleCanvasMousedown);
-     function handleCanvasMousedown(e) {
-       // Ensure user is using their primary mouse button
-       if (e.button !== 0) {
+    canvas.addEventListener("mousedown", handleCanvasMousedown);
+    function handleCanvasMousedown(e) {
+      // Ensure user is using their primary mouse button
+      if (e.button !== 0) {
         return;
-       }
+      }
 
-       const canvasBoundingRect = canvas.getBoundingClientRect();
-       const x = e.clientX - canvasBoundingRect.left;
-       const y = e.clientY - canvasBoundingRect.top;
-       const cellX = Math.floor(x / cellPixelLength);
-       const cellY = Math.floor(y / cellPixelLength);
-       const currentColor = colorHistory[`${cellX}_${cellY}`];
+      const canvasBoundingRect = canvas.getBoundingClientRect();
+      const x = e.clientX - canvasBoundingRect.left;
+      const y = e.clientY - canvasBoundingRect.top;
+      const cellX = Math.floor(x / cellPixelLength);
+      const cellY = Math.floor(y / cellPixelLength);
+      const currentColor = colorHistory[`${cellX}_${cellY}`];
 
-       if (e.ctrlKey) {
-         if (currentColor) {
-           setColor(currentColor);
-         }
-       } else {
-         fillCell(cellX, cellY);
-       }
-     }
+      if (e.ctrlKey) {
+        if (currentColor) {
+          setColor(currentColor);
+        }
+      } else {
+        fillCell(cellX, cellY);
+      }
+    }
     function fillCell(cellX, cellY) {
       const startX = cellX * cellPixelLength;
       const startY = cellY * cellPixelLength;
@@ -65,14 +65,14 @@ const Canvas: React.FC<CanvasInterface> = () => {
       [...Array(CELL_SIDE_COUNT ** 2)].forEach(() =>
         guide.insertAdjacentHTML("beforeend", "<div></div>")
       );
-			canvas.width = x;
-			canvas.height = y;
-			context.lineCap = "round";
-			context.lineWidth = 5;
-			contextRef.current = context;
-			setA(1);
-		}
-		context.strokeStyle = isColor;
+      canvas.width = x;
+      canvas.height = y;
+      context.lineCap = "round";
+      context.lineWidth = 5;
+      contextRef.current = context;
+      setA(1);
+    }
+    context.strokeStyle = isColor;
   }, [isColor]);
 
   const startDrawing = ({ nativeEvent }) => {
@@ -111,8 +111,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
 
   const setToClear = () => {
     contextRef.current.clearRect(0, 0, x, y);
-	};
-	
+  };
+
   const saveImageToLocal = (event) => {
     let link = event.currentTarget;
     link.setAttribute("download", "canvas.png");
@@ -158,15 +158,14 @@ export const CanvasStyle = styled.div`
   width: 1280px;
   height: 780px;
   border: 2px solid #323232;
-  background-color: #fff;
   cursor: pointer;
+  background-image: url("/public/img/mapa_mudo_01.jpg");
 `;
 export const CanvasGuide = styled.div`
   display: grid;
   pointer-events: none;
   position: absolute;
   border: 1px solid rgba(0, 0, 0, 0.1);
-
 `;
 
 export default Canvas;
