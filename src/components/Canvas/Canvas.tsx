@@ -1,79 +1,83 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 
 export interface CanvasInterface {}
 
-
 const Canvas: React.FC<CanvasInterface> = () => {
-	 const canvasRef = useRef(null);
-   const contextRef = useRef(null);
+  const canvasRef = useRef(null);
+  const contextRef = useRef(null);
 
-	const [isDrawing, setIsDrawing] = useState(false);
-	const [isColor, setColor] = useState("");
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [isColor, setColor] = useState("");
+  const [x, setX] = useState(1280);
+	const [y, setY] = useState(780);
+	const [a, setA] = useState(0);
 	
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		const context = canvas.getContext("2d");
+		if (a === 0) {
+			canvas.width = x;
+			canvas.height = y;
+			context.lineCap = "round";
+			context.lineWidth = 5;
+			contextRef.current = context;
+			setA(1);
+		}
+		context.strokeStyle = isColor;
+  }, [isColor]);
 
-   useEffect(() => {
-     const canvas = canvasRef.current;
-     canvas.width = 500;
-     canvas.height = 500;
+  const startDrawing = ({ nativeEvent }) => {
+    const { offsetX, offsetY } = nativeEvent;
+    contextRef.current.beginPath();
+    contextRef.current.moveTo(offsetX, offsetY);
+    contextRef.current.lineTo(offsetX, offsetY);
+    contextRef.current.stroke();
+    setIsDrawing(true);
+    nativeEvent.preventDefault();
+  };
 
-		 const context = canvas.getContext("2d");
-     context.lineCap = "round";
-     context.strokeStyle = isColor;
-     context.lineWidth = 5;
-     contextRef.current = context;
-   }, [isColor]);
+  const draw = ({ nativeEvent }) => {
+    if (!isDrawing) {
+      return;
+    }
 
-   const startDrawing = ({ nativeEvent }) => {
-     const { offsetX, offsetY } = nativeEvent;
-     contextRef.current.beginPath();
-     contextRef.current.moveTo(offsetX, offsetY);
-     contextRef.current.lineTo(offsetX, offsetY);
-     contextRef.current.stroke();
-     setIsDrawing(true);
-     nativeEvent.preventDefault();
-   };
+    const { offsetX, offsetY } = nativeEvent;
+    contextRef.current.lineTo(offsetX, offsetY);
+    contextRef.current.stroke();
+    nativeEvent.preventDefault();
+  };
 
-   const draw = ({ nativeEvent }) => {
-     if (!isDrawing) {
-       return;
-     }
+  const stopDrawing = () => {
+    contextRef.current.closePath();
+    setIsDrawing(false);
+  };
 
-     const { offsetX, offsetY } = nativeEvent;
-     contextRef.current.lineTo(offsetX, offsetY);
-     contextRef.current.stroke();
-     nativeEvent.preventDefault();
-   };
+  const setToDraw = () => {
+    contextRef.current.globalCompositeOperation = "source-over" || "";
+  };
 
-   const stopDrawing = () => {
-     contextRef.current.closePath();
-     setIsDrawing(false);
-   };
+  const setToErase = () => {
+    contextRef.current.globalCompositeOperation = "destination-out";
+  };
 
-   const setToDraw = () => {
-     contextRef.current.globalCompositeOperation = "source-over"  || "";
-   };
+  const setToClear = () => {
+    contextRef.current.clearRect(0, 0, x, y);
+  };
 
-   const setToErase = () => {
-     contextRef.current.globalCompositeOperation = "destination-out";
-	 };
-	 
-	const setToClear = () => {
-		contextRef.current.clearRect(0, 0, 500, 500);
-	};
+  const setChangeColor = (color) => {
+    context.strokeStyle = color;
+    contextRef.current = context;
+  };
+  const saveImageToLocal = (event) => {
+    let link = event.currentTarget;
+    link.setAttribute("download", "canvas.png");
+    let image = canvasRef.current.toDataURL("image/png");
+    link.setAttribute("href", image);
+  };
 
-	const upColor = () => {
-		
-	};
-   const saveImageToLocal = (event) => {
-     let link = event.currentTarget;
-     link.setAttribute("download", "canvas.png");
-     let image = canvasRef.current.toDataURL("image/png");
-     link.setAttribute("href", image);
-   };
-
-	return (
+  return (
     <CanvasStyle>
       <div>
         <canvas
@@ -86,9 +90,13 @@ const Canvas: React.FC<CanvasInterface> = () => {
         ></canvas>
         <div>
           <button onClick={setToDraw}>Draw</button>
-					<button onClick={setToErase}>Erase</button>
-					<button onClick={setToClear}>Clear</button>
-					<input type="color" value={isColor} onChange={(e) => setColor(e.target.value)} />
+          <button onClick={setToErase}>Erase</button>
+          <button onClick={setToClear}>Clear</button>
+          <input
+            type="color"
+            value={isColor}
+            onChange={(e) => setColor(e.target.value)}
+          />
           <a
             id="download_image_link"
             href="download_link"
@@ -103,10 +111,10 @@ const Canvas: React.FC<CanvasInterface> = () => {
 };
 
 export const CanvasStyle = styled.div`
-  height: 500px;
-  width: 500px;
+  width: 1280px;
+  height: 780px;
   border: 2px solid #323232;
-	background-color: #fff;
+  background-color: #fff;
 `;
 
 export default Canvas;
