@@ -7,7 +7,6 @@ function App() {
   const [count, setCount] = useState(0);
   return (
     <div className="App">
-      
       <h1>
         <img src={logo} alt="mapa" width="60" height="40" /> Real Pixel World
       </h1>
