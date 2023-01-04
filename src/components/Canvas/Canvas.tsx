@@ -12,6 +12,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const [toggleGuide, setToggleGuide] = useState(true);
   const [x, setX] = useState(1280);
   const [y, setY] = useState(780);
+  const [isX, setIsX] = useState(0);
+  const [isY, setIsY] = useState(0);
   const [a, setA] = useState(0);
 
   useEffect(() => {
@@ -39,6 +41,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
       const y = e.clientY - canvasBoundingRect.top;
       const cellX = Math.floor(x / cellPixelLength);
       const cellY = Math.floor(y / cellPixelLength);
+      setIsX(cellX);
+      setIsY(cellY);
       const currentColor = colorHistory[`${cellX}_${cellY}`];
 
       if (e.ctrlKey) {
@@ -52,13 +56,11 @@ const Canvas: React.FC<CanvasInterface> = () => {
     function fillCell(cellX, cellY) {
       const startX = cellX * cellPixelLength;
       const startY = cellY * cellPixelLength;
-
       context.fillStyle = isColor;
       context.fillRect(startX, startY, cellPixelLength, cellPixelLength);
       colorHistory[`${cellX}_${cellY}`] = isColor;
     }
-
-    //sfgdf
+    //
     if (a === 0) {
       context.fillStyle = "#ffffff";
       context.fillRect(0, 0, canvas.width, canvas.height);
@@ -71,6 +73,11 @@ const Canvas: React.FC<CanvasInterface> = () => {
       context.lineWidth = 5;
       contextRef.current = context;
       setA(1);
+      var img = new Image();
+      img.src = "../../assets/mapa_mudo_01.png";
+      img.onload = function () {
+        context.drawImage(img, 0, 0);
+      };
     }
     context.strokeStyle = isColor;
   }, [isColor]);
@@ -136,6 +143,10 @@ const Canvas: React.FC<CanvasInterface> = () => {
           <button onClick={setToDraw}>Draw</button>
           <button onClick={setToErase}>Erase</button>
           <button onClick={setToClear}>Clear</button>
+          <label id="coor_x">
+            x = {isX} - y = {isY}{" "}
+          </label>
+
           <input
             type="color"
             value={isColor}
