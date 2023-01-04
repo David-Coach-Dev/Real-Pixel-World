@@ -57,7 +57,11 @@ const Canvas: React.FC<CanvasInterface> = () => {
 
    const setToErase = () => {
      contextRef.current.globalCompositeOperation = "destination-out";
-   };
+	 };
+	 
+	const setToClear = () => {
+		contextRef.current.clearRect(0, 0, 500, 500);
+	};
 
 	const upColor = () => {
 		
@@ -83,7 +87,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
         <div>
           <button onClick={setToDraw}>Draw</button>
 					<button onClick={setToErase}>Erase</button>
-					<button onClick={() => setColor("red")}>red</button>
+					<button onClick={setToClear}>Clear</button>
 					<input type="color" value={isColor} onChange={(e) => setColor(e.target.value)} />
           <a
             id="download_image_link"
