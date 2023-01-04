@@ -1,5 +1,5 @@
 import { useState } from "react";
-import mapa from "../public/img/mapamunid_mudo_01.jpg";
+import mapa from "../public/img/mapa_mudo_01.jpg";
 import logo from "../public/img/rpw.png";
 import "./App.css";
 
