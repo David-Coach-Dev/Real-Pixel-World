@@ -18,22 +18,19 @@ const Canvas: React.FC<CanvasInterface> = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    const CELL_SIDE_COUNT = 1000;
-    canvas.width = (window.innerWidth);
-    canvas.height = (window.innerHeight);
-    console.log(window.innerWidth);
-    console.log(window.innerHeight);
+    const CELL_SIDE_COUNT = 500;
     const cellPixelLength = canvas.width / CELL_SIDE_COUNT;
     const colorHistory = {};
     //
     if (a === 0) {
       context.fillStyle = "#E47979";
+      canvas.width = (window.innerWidth);
+      canvas.height = (window.innerHeight);
       contextRef.current = context;
       setA(1);
       const img = new Image();
-      img.src =
-        "https://i.imgur.com/NpP3gxD.jpeg" || "../../assets/mapa_mudo_01.jpg";
-      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+      img.src = "https://i.imgur.com/NpP3gxD.jpeg" || "../../assets/mapa_mudo_01.jpg";
+      context.drawImage(img, 0, 0);
     }
     //
     canvas.addEventListener("mousedown", handleCanvasMousedown);
@@ -48,7 +45,6 @@ const Canvas: React.FC<CanvasInterface> = () => {
         Math.floor((e.clientY - canvasBoundingRect.top) / cellPixelLength)
       );
     }
-
     function handleCanvasMousedown(e) {
       if (e.button !== 0) {
         return;

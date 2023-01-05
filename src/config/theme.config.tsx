@@ -4,7 +4,7 @@ type ThemeProp = {
 };
 export enum themePalette {
   BG = '#000000',
-  RED = '#ff0000',
+  RED = '#00FF62',
   FONT_GLOBAL = 'Cascadia Code',
   //Alert styled
   ERROR_MAIN = '#F44336',
