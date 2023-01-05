@@ -111,7 +111,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
   };
 
   const setToClear = () => {
-    contextRef.current.clearRect(0, 0, x, y);
+    contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
   };
 
   const saveImageToLocal = (event) => {
