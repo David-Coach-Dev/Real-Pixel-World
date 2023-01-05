@@ -186,7 +186,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
 
 export const CanvasStyle = styled.div`
   cursor: pointer;
-  background-image: url("https://i.imgur.com/NpP3gxD.jpeg");
+  //background-image: url("https://i.imgur.com/NpP3gxD.jpeg");
   border: 1px solid #c01d1d;
 `;
 export const CanvasGuide = styled.div`
