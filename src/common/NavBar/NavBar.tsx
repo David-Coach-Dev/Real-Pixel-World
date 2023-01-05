@@ -4,7 +4,7 @@ export const NavBar: React.FC<{}> = () => {
   const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="sticky">
+      <AppBar position="relative">
         <Toolbar>
           <Container maxWidth="xl">
             <Grid
