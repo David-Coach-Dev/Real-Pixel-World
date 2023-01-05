@@ -18,7 +18,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    const CELL_SIDE_COUNT = 1500;
+    const CELL_SIDE_COUNT = 1000;
     canvas.width = (window.innerWidth);
     canvas.height = (window.innerHeight);
     console.log(window.innerWidth);
