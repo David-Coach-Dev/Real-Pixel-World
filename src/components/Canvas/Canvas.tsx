@@ -41,8 +41,15 @@ const Canvas: React.FC<CanvasInterface> = () => {
       const canvasBoundingRect = canvas.getBoundingClientRect();
       const x1 = e.clientX - canvasBoundingRect.left;
       const y1 = e.clientY - canvasBoundingRect.top;
+      console.log(e.clientX);
+      console.log(canvasBoundingRect.left);
+      console.log(x1);
+      console.log(e.clientY);
+      console.log(canvasBoundingRect.top);
+      console.log(y1);
       const cellX = Math.floor(x1 / cellPixelLength);
       const cellY = Math.floor(y1 / cellPixelLength);
+      console.log(cellX, " ", cellY);
       setIsX(cellX);
       setIsY(cellY);
       const currentColor = colorHistory[`${cellX}_${cellY}`];
@@ -76,7 +83,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
       contextRef.current = context;
       setA(1);
       var img = new Image();
-      img.src = "../../assets/mapa_mudo_01.png";
+      img.src = "https://i.imgur.com/NpP3gxD.jpeg";
       img.onload = function () {
         context.drawImage(img, 0, 0);
       };
