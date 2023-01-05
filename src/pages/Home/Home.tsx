@@ -1,7 +1,6 @@
 import { Canvas } from "@/components";
 import { useNotification } from "@/context";
 
-
 export interface HomeInterface {}
 const Home: React.FC<HomeInterface> = () => {
   const { getSuccess, getError } = useNotification();
@@ -11,7 +10,6 @@ const Home: React.FC<HomeInterface> = () => {
   return (
     <>
       <Canvas />
-   
     </>
   );
 };
