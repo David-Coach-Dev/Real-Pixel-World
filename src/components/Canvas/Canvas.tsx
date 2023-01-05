@@ -29,7 +29,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
       contextRef.current = context;
       setA(1);
       const img = new Image();
-      img.src = "https://i.imgur.com/NpP3gxD.jpeg" || "../../assets/mapa_mudo_01.jpg";
+      img.src = "../../assets/";
       context.drawImage(img, 0, 0);
     }
     //
