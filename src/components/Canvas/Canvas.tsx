@@ -11,32 +11,55 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const [toggleGuide, setToggleGuide] = useState(true);
   const [isX, setIsX] = useState(0);
   const [isY, setIsY] = useState(0);
+  const [isPixelX, setIsPixelX] = useState(0);
+  const [isPixelY, setIsPixelY] = useState(0);
   const [a, setA] = useState(0);
 
   useEffect(() => {
-    const guide = document.getElementById("guide");
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    guide.style.width = `${canvas.width}px`;
-    guide.style.height = `${canvas.height}px`;
-    const CELL_SIDE_COUNT = 100;
+    const CELL_SIDE_COUNT = 1500;
+    canvas.width = (window.innerWidth);
+    canvas.height = (window.innerHeight);
+    console.log(window.innerWidth);
+    console.log(window.innerHeight);
     const cellPixelLength = canvas.width / CELL_SIDE_COUNT;
     const colorHistory = {};
-    guide.style.gridTemplateColumns = `repeat(${CELL_SIDE_COUNT}, 1fr)`;
-    guide.style.gridTemplateRows = `repeat(${CELL_SIDE_COUNT}, 1fr)`;
-    guide.style.display = toggleGuide ? null : "none";
+    //
+    if (a === 0) {
+      context.fillStyle = "#E47979";
+      contextRef.current = context;
+      setA(1);
+      const img = new Image();
+      img.src =
+        "https://i.imgur.com/NpP3gxD.jpeg" || "../../assets/mapa_mudo_01.jpg";
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
     //
     canvas.addEventListener("mousedown", handleCanvasMousedown);
+    window.addEventListener("mousemove", handleWindowMousemove);
+
+    function handleWindowMousemove(e) {
+      const canvasBoundingRect = canvas.getBoundingClientRect();
+      setIsX(
+        Math.floor((e.clientX - canvasBoundingRect.left) / cellPixelLength)
+      );
+      setIsY(
+        Math.floor((e.clientY - canvasBoundingRect.top) / cellPixelLength)
+      );
+    }
+
     function handleCanvasMousedown(e) {
       if (e.button !== 0) {
         return;
       }
-
       const canvasBoundingRect = canvas.getBoundingClientRect();
       const x1 = e.clientX - canvasBoundingRect.left;
       const y1 = e.clientY - canvasBoundingRect.top;
       const cellX = Math.floor(x1 / cellPixelLength);
       const cellY = Math.floor(y1 / cellPixelLength);
+      setIsPixelX(cellX);
+      setIsPixelY(cellY);
       const currentColor = colorHistory[`${cellX}_${cellY}`];
       if (e.ctrlKey) {
         if (currentColor) {
@@ -53,62 +76,21 @@ const Canvas: React.FC<CanvasInterface> = () => {
       context.fillRect(startX, startY, cellPixelLength, cellPixelLength);
       colorHistory[`${cellX}_${cellY}`] = isColor;
     }
-    //
-    if (a === 0) {
-      context.fillStyle = "#ffffff";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      [...Array(CELL_SIDE_COUNT ** 2)].forEach(() =>
-        guide.insertAdjacentHTML("beforeend", "<div></div>")
-      );
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      context.lineCap = "round";
-      context.lineWidth = 5;
-      contextRef.current = context;
-      setA(1);
-      const img = new Image();
-      img.src = "https://i.imgur.com/NpP3gxD.jpeg" || "../../assets/mapa_mudo_01.jpg";
-      context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    }
     context.strokeStyle = isColor;
-  }, [isColor]);
-  const drawImage = (e) => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const img = new Image();
-    img.src = e.target.files[0];
-    img.onload = () => {
-      context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-  };
+  }, [isColor, toggleGuide, a]);
+
   const handleColorChange = (e) => {
     setColor(e.target.value);
   };
+
   const handleToggleGuide = () => {
     setToggleGuide(!toggleGuide);
   };
-
-
-
-  function startDrawing({ nativeEvent }) {
-    const { offsetX, offsetY } = nativeEvent;
-    contextRef.current.beginPath();
-    contextRef.current.moveTo(offsetX, offsetY);
-    contextRef.current.lineTo(offsetX, offsetY);
-    contextRef.current.stroke();
-    setIsDrawing(true);
-    nativeEvent.preventDefault();
-  }
 
   const draw = ({ nativeEvent }) => {
     if (!isDrawing) {
       return;
     }
-
-    const { offsetX, offsetY } = nativeEvent;
-    contextRef.current.lineTo(offsetX, offsetY);
-    contextRef.current.stroke();
-    nativeEvent.preventDefault();
   };
 
   const stopDrawing = () => {
@@ -127,16 +109,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const setToClear = () => {
     contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
   };
-  const setToSave = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const img = new Image();
-    img.src = canvas.toDataURL("image/png");
-    img.onload = () => {
-      context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-  };
-    const saveImageToLocal = (event) => {
+
+  const saveImageToLocal = (event) => {
     let link = event.currentTarget;
     link.setAttribute("download", "canvas.png");
     let image = canvasRef.current.toDataURL("image/png");
@@ -147,16 +121,13 @@ const Canvas: React.FC<CanvasInterface> = () => {
     <>
       <CanvasStyle>
         <CanvasGuide id="guide"></CanvasGuide>
-        <div>
-          <canvas
-            className="canvas-container"
-            ref={canvasRef}
-            onMouseDown={startDrawing}
-            onMouseMove={draw}
-            onMouseUp={stopDrawing}
-            onMouseLeave={stopDrawing}
-          ></canvas>
-        </div>
+        <canvas
+          className="canvas-container"
+          ref={canvasRef}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+        ></canvas>
       </CanvasStyle>
       <CanvasControle>
         <button onClick={setToDraw}>Draw</button>
@@ -165,13 +136,17 @@ const Canvas: React.FC<CanvasInterface> = () => {
         <label id="coor_x">
           x = {isX} - y = {isY}{" "}
         </label>
+        <label id="pixel_x">
+          x = {isPixelX} - y = {isPixelY}{" "}
+        </label>
         <input
           type="color"
           value={isColor}
-          onChange={(e) => { handleColorChange(e); }}
+          onChange={(e) => {
+            handleColorChange(e);
+          }}
         />
         <button onClick={handleToggleGuide}>Toggle Guide</button>
-        <button onClick={setToSave}>Save</button>
         <a
           id="download_image_link"
           href="download_link"
@@ -192,18 +167,18 @@ export const CanvasGuide = styled.div`
   display: grid;
   pointer-events: none;
   position: absolute;
-  //border: 2px solid #c01d1d;
+  border: 1px solid #c01d1d;
 `;
 export const CanvasControle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 5px;
-  padding: 5px;
+  //margin: 5px;
+  //padding: 5px;
   border: 2px solid #c01d1d;
+  line-color: #c01d1d;
   cursor: pointer;
   index: 1;
 `;
-
 export default Canvas;
