@@ -7,7 +7,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [isColor, setColor] = useState("");
+  const [isColor, setColor] = useState("#834745");
   const [toggleGuide, setToggleGuide] = useState(true);
   const [isX, setIsX] = useState(0);
   const [isY, setIsY] = useState(0);
@@ -28,7 +28,6 @@ const Canvas: React.FC<CanvasInterface> = () => {
     //
     canvas.addEventListener("mousedown", handleCanvasMousedown);
     function handleCanvasMousedown(e) {
-      // Ensure user is using their primary mouse button
       if (e.button !== 0) {
         return;
       }
@@ -67,16 +66,31 @@ const Canvas: React.FC<CanvasInterface> = () => {
       context.lineWidth = 5;
       contextRef.current = context;
       setA(1);
-      var img = new Image();
-      img.src = "https://i.imgur.com/NpP3gxD.jpeg";
-      img.onload = function () {
-        context.drawImage(img, 0, 0);
-      };
+      const img = new Image();
+      img.src = "https://i.imgur.com/NpP3gxD.jpeg" || "../../assets/mapa_mudo_01.jpg";
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
     }
     context.strokeStyle = isColor;
   }, [isColor]);
+  const drawImage = (e) => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const img = new Image();
+    img.src = e.target.files[0];
+    img.onload = () => {
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+  };
+  const handleColorChange = (e) => {
+    setColor(e.target.value);
+  };
+  const handleToggleGuide = () => {
+    setToggleGuide(!toggleGuide);
+  };
 
-  const startDrawing = ({ nativeEvent }) => {
+
+
+  function startDrawing({ nativeEvent }) {
     const { offsetX, offsetY } = nativeEvent;
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
@@ -84,7 +98,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
     contextRef.current.stroke();
     setIsDrawing(true);
     nativeEvent.preventDefault();
-  };
+  }
 
   const draw = ({ nativeEvent }) => {
     if (!isDrawing) {
@@ -103,7 +117,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
   };
 
   const setToDraw = () => {
-    contextRef.current.globalCompositeOperation = "source-over" || "";
+    contextRef.current.globalCompositeOperation = "source-over";
   };
 
   const setToErase = () => {
@@ -113,8 +127,16 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const setToClear = () => {
     contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
   };
-
-  const saveImageToLocal = (event) => {
+  const setToSave = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const img = new Image();
+    img.src = canvas.toDataURL("image/png");
+    img.onload = () => {
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+  };
+    const saveImageToLocal = (event) => {
     let link = event.currentTarget;
     link.setAttribute("download", "canvas.png");
     let image = canvasRef.current.toDataURL("image/png");
@@ -143,12 +165,13 @@ const Canvas: React.FC<CanvasInterface> = () => {
         <label id="coor_x">
           x = {isX} - y = {isY}{" "}
         </label>
-
         <input
           type="color"
           value={isColor}
-          onChange={(e) => setColor(e.target.value)}
+          onChange={(e) => { handleColorChange(e); }}
         />
+        <button onClick={handleToggleGuide}>Toggle Guide</button>
+        <button onClick={setToSave}>Save</button>
         <a
           id="download_image_link"
           href="download_link"
@@ -164,12 +187,13 @@ const Canvas: React.FC<CanvasInterface> = () => {
 export const CanvasStyle = styled.div`
   cursor: pointer;
   background-image: url("https://i.imgur.com/NpP3gxD.jpeg");
+  border: 1px solid #c01d1d;
 `;
 export const CanvasGuide = styled.div`
   display: grid;
   pointer-events: none;
   position: absolute;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  //border: 2px solid #c01d1d;
 `;
 export const CanvasControle = styled.div`
   display: flex;
@@ -180,7 +204,6 @@ export const CanvasControle = styled.div`
   padding: 5px;
   border: 2px solid #c01d1d;
   cursor: pointer;
-  background-image: url("https://i.imgur.com/NpP3gxD.jpeg");
   index: 1;
 `;
 
