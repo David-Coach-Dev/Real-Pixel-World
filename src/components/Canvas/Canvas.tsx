@@ -10,8 +10,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isColor, setColor] = useState("");
   const [toggleGuide, setToggleGuide] = useState(true);
-  const [x, setX] = useState(1280);
-  const [y, setY] = useState(780);
+  const [x, setX] = useState(window.innerWidth);
+  const [y, setY] = useState(window.innerHeight);
   const [isX, setIsX] = useState(0);
   const [isY, setIsY] = useState(0);
   const [a, setA] = useState(0);
@@ -21,6 +21,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     guide.style.width = `${canvas.width}px`;
+    console.log(canvas.width);
+    console.log(canvas.height);
     guide.style.height = `${canvas.height}px`;
     const CELL_SIDE_COUNT = 100;
     const cellPixelLength = canvas.width / CELL_SIDE_COUNT;
@@ -37,10 +39,10 @@ const Canvas: React.FC<CanvasInterface> = () => {
       }
 
       const canvasBoundingRect = canvas.getBoundingClientRect();
-      const x = e.clientX - canvasBoundingRect.left;
-      const y = e.clientY - canvasBoundingRect.top;
-      const cellX = Math.floor(x / cellPixelLength);
-      const cellY = Math.floor(y / cellPixelLength);
+      const x1 = e.clientX - canvasBoundingRect.left;
+      const y1 = e.clientY - canvasBoundingRect.top;
+      const cellX = Math.floor(x1 / cellPixelLength);
+      const cellY = Math.floor(y1 / cellPixelLength);
       setIsX(cellX);
       setIsY(cellY);
       const currentColor = colorHistory[`${cellX}_${cellY}`];
