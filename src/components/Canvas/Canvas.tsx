@@ -14,9 +14,9 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const [isHistory, setIsHistory] = useState(false);
   const fondo = "./src/assets/mapa_mudo_01.png";
   const colorHistory = {};
-  let pixelHistory = {};
+  const [isPixelHistory, setIsPixelHistory] = useState([]);
   let img = new Image();
- 
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -25,6 +25,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
     const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
     const cellPixelLengthY = canvas.height / CELL_SIDE_COUNT;
     if (!isLoaded) {
+      setIsPixelHistory([]);
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight - 200;
       contextRef.current = context;
@@ -32,26 +33,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
       img.src = fondo;
       img.onload = function () {
         context.drawImage(this, 0, 0, canvas.width, canvas.height);
-        //cargar pixeles
-        console.log(isHistory);
-        console.log({ colorHistory });
-        console.log({ pixelHistory });
-        if (isHistory) {
-          for (let i in pixelHistory) {
-            console.log(i);
-            let cX = i.split("_")[0];
-            console.log(cX);
-            let cY = i.split("_")[1];
-            console.log(cY);
-            let color = pixelHistory[i];
-            console.log(color);
-          }
-          console.log("historia cargar ", isHistory);
-        } else {
-          console.log("no cargo Historia", isHistory);
-        }
       };
-    };
+    }
 
     function handleWindowMousemove(e) {
       const canvasBoundingRect = canvas.getBoundingClientRect();
@@ -65,8 +48,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
       setIsY(Y);
     }
     function handleCanvasMousedown(e) {
-       const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
-       const cellPixelLengthY = canvas.height / CELL_SIDE_COUNT;
+      const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
+      const cellPixelLengthY = canvas.height / CELL_SIDE_COUNT;
       if (e.button !== 0) {
         return;
       }
@@ -83,24 +66,46 @@ const Canvas: React.FC<CanvasInterface> = () => {
           setColor(currentColor);
         }
       } else {
-        setIsHistory(true);
         fillCell(cellX, cellY);
       }
     }
-    function fillCell(cellX, cellY) {
+    function fillCell(cellX, cellY, color = isColor) {
+      console.log(cellX + " - " + cellY + " : " + color);
       const startX = cellX * cellPixelLengthX;
       const startY = cellY * cellPixelLengthY;
-      context.fillStyle = isColor;
+      context.fillStyle = color;
       context.fillRect(startX, startY, cellPixelLengthX, cellPixelLengthY);
-      colorHistory[`${cellX}_${cellY}`] = isColor;
-      pixelHistory = [].concat(colorHistory);
+      colorHistory[`${cellX}_${cellY}`] = color;
+      console.log(colorHistory);
+      isPixelHistory.push({ [`${cellX}_${cellY}`]: color });
+      console.log(isPixelHistory);
+      setIsHistory(true);
     }
-
+    //cargar pixeles
+    if (isHistory) {
+      for (let j in isPixelHistory) {
+        for (let i in isPixelHistory[j]) {
+          console.log(i);
+          let cX = parseInt(i.split("_")[0]);
+          console.log(cX);
+          let cY = parseInt(i.split("_")[1]);
+          console.log(cY);
+          let color = isPixelHistory[j][i];
+          console.log(color);
+          console.log(cX + " - " + cY + " : " + color);
+          const sX = cX * cellPixelLengthX;
+          const sY = cY * cellPixelLengthY;
+          context.fillStyle = color;
+          context.fillRect(sX, sY, cellPixelLengthX, cellPixelLengthY);
+        }
+      }
+      setIsHistory(false);
+    };
     canvas.addEventListener("mousedown", handleCanvasMousedown);
     window.addEventListener("mousemove", handleWindowMousemove);
     context.strokeStyle = isColor;
     context.scale(isZoom, isZoom);
-  }, [isColor, isHistory, isLoaded]);
+  }, [isColor, isLoaded]);
   //----------
 
   const handleColorChange = (e) => {
@@ -135,7 +140,6 @@ const Canvas: React.FC<CanvasInterface> = () => {
     }
   };
   const setToMenos = () => {
-    
     if (isZoom > 1) {
       setIsZoom(isZoom - 1);
       setIsLoaded(false);
@@ -161,7 +165,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
         <label id="pixel_x">
           Pixel en x = {isPixelX} y = {isPixelY}
         </label>
-        <label id="history">History = {isHistory}</label>
+        <label id="history">Historia = {isHistory}</label>
         <CanvasButton>
           <label id="pixel_x">Color :</label>
           <input
