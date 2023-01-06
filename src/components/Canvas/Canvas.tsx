@@ -29,10 +29,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
       setIsLoaded(true);
       let img = new Image();
       img.src = fondo;
-      console.log(img.src);
-      img.onload = function () {
+      console.log(img.src);      img.onload = function () {
         context.drawImage(this, 0, 0, canvas.width, canvas.height);
-        console.log("ok");
       };
     }
     const CELL_SIDE_COUNT = 500;
@@ -109,12 +107,12 @@ const Canvas: React.FC<CanvasInterface> = () => {
     link.setAttribute("href", image);
   };
   const setToMas = () => {
-    setIsZoom(isZoom + 0.1);
+    setIsZoom(isZoom + 1);
   };
   const setToMenos = () => {
-    setIsZoom(isZoom - 0.1);
+    setIsZoom(isZoom - 1);
   };
-  const setToMornal = () => {
+  const setToNormal = () => {
     setIsZoom(1);
   };
 
@@ -135,9 +133,13 @@ const Canvas: React.FC<CanvasInterface> = () => {
         <button onClick={setToErase}>Erase</button>
         <button onClick={setToClear}>Clear</button>
         <button onClick={setToSave}>Save</button>
-        <button onClick={setToMas}>+</button>
-        <button onClick={setToMenos}>-</button>
-        <button onClick={setToMornal}>-</button>
+        <button onClick={setToMas}>+ 0.1</button>
+        <button onClick={setToMenos}>- 0.1</button>
+        <button onClick={setToNormal}>1</button>
+
+        <label id="coor_x">
+          zoom = {isZoom}
+        </label>
         <label id="coor_x">
           x = {isX} - y = {isY}{" "}
         </label>

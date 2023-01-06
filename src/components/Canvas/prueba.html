@@ -1,32 +1,11 @@
-<canvas width="600" height="300" id="panel1" style="border: 1px solid black"></canvas>
-<canvas width="600" height="300" id="panel2" style="border: 1px solid black"></canvas>
+<canvas width="600" height="300" id="mipanel"></canvas>
 <script>
-var lienzo1 = document.getElementById("panel1");
-var lapiz1 = lienzo1.getContext("2d");
-var lienzo2 = document.getElementById("panel2");
-var lapiz2 = lienzo2.getContext("2d");
-function cuadricula(lapiz){
-lapiz.lineWidth = 1;
-lapiz.strokeStyle = "lightgray";
-inc=10;
-for(i=0; i<300;i+=inc)
-{
-lapiz.moveTo(0, i);
-lapiz.lineTo(600,i);
-lapiz.stroke();
-}
-for(i=0; i<600;i+=inc)
-{
-lapiz.moveTo(i, 0);
-lapiz.lineTo(i,300);
-lapiz.stroke();
-}
-}
-//Canvas superior escala normal
-cuadricula(lapiz1);
-lapiz1.fillRect(10,10,100,100);
-//Escalar canvas inferior
-lapiz2.scale(1, 2);
-cuadricula(lapiz2);
-lapiz2.fillRect(10,10,100,100);
+  var miLienzo = document.getElementById("mipanel");
+  var lapiz = miLienzo.getContext("2d");
+  lapiz.scale(1, 1.5);
+  lapiz.beginPath();
+  lapiz.fillStyle = "red";
+  lapiz.arc(300, 150, 80, 0, 2 * Math.PI);
+  lapiz.fill();
+  lapiz.stroke();
 </script>
