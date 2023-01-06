@@ -1,20 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import logo from 'https://i.imgur.com/dslrfVI.png';
 
 export interface CanvasInterface {}
 
 const Canvas: React.FC<CanvasInterface> = () => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
   const [isColor, setColor] = useState("#834745");
   const [isX, setIsX] = useState(0);
   const [isY, setIsY] = useState(0);
   const [isPixelX, setIsPixelX] = useState(0);
   const [isPixelY, setIsPixelY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const logo = 'https://i.imgur.com/dslrfVI.png';
+  const [isZoom, setIsZoom] = useState(1);
+  const logo = "https://i.imgur.com/dslrfVI.png";
   const fondo = "./src/assets/mapa_mudo_01.png";
   let mapaHistory = {};
   const colorHistory = {};
@@ -24,8 +23,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
     const context = canvas.getContext("2d");
     //Cargando Canvas
     if (!isLoaded) {
-      canvas.width = (window.innerWidth);
-      canvas.height = (window.innerHeight);
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       contextRef.current = context;
       setIsLoaded(true);
       let img = new Image();
@@ -40,7 +39,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
     const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
     const cellPixelLengthY = canvas.height / CELL_SIDE_COUNT;
     //
-    
+
     function handleWindowMousemove(e) {
       const canvasBoundingRect = canvas.getBoundingClientRect();
       setIsX(
@@ -55,8 +54,12 @@ const Canvas: React.FC<CanvasInterface> = () => {
         return;
       }
       const canvasBoundingRect = canvas.getBoundingClientRect();
-      const cellX = Math.floor((e.clientX - canvasBoundingRect.left) / cellPixelLengthX);
-      const cellY = Math.floor((e.clientY - canvasBoundingRect.top) / cellPixelLengthY);
+      const cellX = Math.floor(
+        (e.clientX - canvasBoundingRect.left) / cellPixelLengthX
+      );
+      const cellY = Math.floor(
+        (e.clientY - canvasBoundingRect.top) / cellPixelLengthY
+      );
       setIsPixelX(cellX);
       setIsPixelY(cellY);
       const currentColor = colorHistory[`${cellX}_${cellY}`];
@@ -78,7 +81,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
     canvas.addEventListener("mousedown", handleCanvasMousedown);
     window.addEventListener("mousemove", handleWindowMousemove);
     context.strokeStyle = isColor;
-  }, [isColor]);
+    context.scale(1, isZoom);
+  }, [isColor, isZoom]);
 
   const handleColorChange = (e) => {
     setColor(e.target.value);
@@ -104,6 +108,15 @@ const Canvas: React.FC<CanvasInterface> = () => {
     link.click();
     link.setAttribute("href", image);
   };
+  const setToMas = () => {
+    setIsZoom(isZoom + 0.1);
+  };
+  const setToMenos = () => {
+    setIsZoom(isZoom - 0.1);
+  };
+  const setToMornal = () => {
+    setIsZoom(1);
+  };
 
   const saveImageToLocal = (event) => {
     let link = event.currentTarget;
@@ -115,16 +128,16 @@ const Canvas: React.FC<CanvasInterface> = () => {
   return (
     <>
       <CanvasStyle>
-        <canvas
-          className="canvas-container"
-          ref={canvasRef}
-        ></canvas>
+        <canvas className="canvas-container" ref={canvasRef}></canvas>
       </CanvasStyle>
       <CanvasControle>
         <button onClick={setToDraw}>Draw</button>
         <button onClick={setToErase}>Erase</button>
         <button onClick={setToClear}>Clear</button>
         <button onClick={setToSave}>Save</button>
+        <button onClick={setToMas}>+</button>
+        <button onClick={setToMenos}>-</button>
+        <button onClick={setToMornal}>-</button>
         <label id="coor_x">
           x = {isX} - y = {isY}{" "}
         </label>
