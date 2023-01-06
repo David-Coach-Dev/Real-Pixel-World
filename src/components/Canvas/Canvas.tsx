@@ -13,7 +13,7 @@ const Canvas: React.FC<CanvasInterface> = () => {
   const [isZoom, setIsZoom] = useState(1);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isHistory, setIsHistory] = useState(false);
-  const fondo = "./src/assets/mapa_mudo_01.png";
+  const fondo = "../src/assets/mapa_mudo_01.png";
   const colorHistory = {};
   const [isPixelHistory, setIsPixelHistory] = useState([]);
   let img = new Image();
