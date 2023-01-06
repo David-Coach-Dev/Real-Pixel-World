@@ -31,11 +31,10 @@ const Canvas: React.FC<CanvasInterface> = () => {
       let img = new Image();
       img.src = fondo;
       console.log(img.src);
-      const onLoad = () => {
-        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+      img.onload = function () {
+        context.drawImage(this, 0, 0, canvas.width, canvas.height);
         console.log("ok");
       };
-      onLoad();
     }
     const CELL_SIDE_COUNT = 500;
     const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
