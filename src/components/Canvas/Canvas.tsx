@@ -1,3 +1,4 @@
+import { stringify } from "querystring";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 export interface CanvasInterface {}
@@ -37,6 +38,8 @@ const Canvas: React.FC<CanvasInterface> = () => {
     }
 
     function handleWindowMousemove(e) {
+      const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
+      const cellPixelLengthY = canvas.height / CELL_SIDE_COUNT;
       const canvasBoundingRect = canvas.getBoundingClientRect();
       const X = Math.floor(
         (e.clientX - canvasBoundingRect.left) / cellPixelLengthX
@@ -70,37 +73,31 @@ const Canvas: React.FC<CanvasInterface> = () => {
       }
     }
     function fillCell(cellX, cellY, color = isColor) {
-      console.log(cellX + " - " + cellY + " : " + color);
       const startX = cellX * cellPixelLengthX;
       const startY = cellY * cellPixelLengthY;
       context.fillStyle = color;
       context.fillRect(startX, startY, cellPixelLengthX, cellPixelLengthY);
       colorHistory[`${cellX}_${cellY}`] = color;
-      console.log(colorHistory);
       isPixelHistory.push({ [`${cellX}_${cellY}`]: color });
-      console.log(isPixelHistory);
       setIsHistory(true);
     }
     //cargar pixeles
     if (isHistory) {
+      const cellPixelLengthX = canvas.width / CELL_SIDE_COUNT;
+      const cellPixelLengthY = canvas.height / CELL_SIDE_COUNT;
       for (let j in isPixelHistory) {
         for (let i in isPixelHistory[j]) {
-          console.log(i);
           let cX = parseInt(i.split("_")[0]);
-          console.log(cX);
           let cY = parseInt(i.split("_")[1]);
-          console.log(cY);
           let color = isPixelHistory[j][i];
-          console.log(color);
-          console.log(cX + " - " + cY + " : " + color);
           const sX = cX * cellPixelLengthX;
           const sY = cY * cellPixelLengthY;
           context.fillStyle = color;
           context.fillRect(sX, sY, cellPixelLengthX, cellPixelLengthY);
+          context.restore();
         }
       }
-      setIsHistory(false);
-    };
+    }
     canvas.addEventListener("mousedown", handleCanvasMousedown);
     window.addEventListener("mousemove", handleWindowMousemove);
     context.strokeStyle = isColor;
@@ -165,9 +162,9 @@ const Canvas: React.FC<CanvasInterface> = () => {
         <label id="pixel_x">
           Pixel en x = {isPixelX} y = {isPixelY}
         </label>
-        <label id="history">Historia = {isHistory}</label>
+        <label id="history">Historia = {isHistory?"Verdadero":"falso"}</label>
         <CanvasButton>
-          <label id="pixel_x">Color :</label>
+          <label id="color">Color :</label>
           <input
             type="color"
             value={isColor}
